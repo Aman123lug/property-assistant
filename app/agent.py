@@ -174,7 +174,7 @@ async def _complete(messages, tools, state):
 
 
 async def run(message, history=()):
-    """Yields events: status, gallery, answer, cards, done, error."""
+    """Yields events: phase, status, answer, gallery, cards, done, error."""
     key = message.strip().lower()
     if not history and key in _cache:
         for ev in _cache[key]:
@@ -198,6 +198,9 @@ async def run(message, history=()):
             if rnd == MAX_TOOL_ROUNDS:  # out of rounds: answer from what was found
                 messages.append({"role": "user", "content": "Write the final answer now from the tool results above. "
                                  "No more tool calls. Say plainly if something could not be found."})
+            # live phase for the UI (not cached): thinking, reviewing tool results, or writing the final answer
+            yield {"type": "phase", "text": "Thinking" if rnd == 0 else
+                   "Writing the answer" if rnd == MAX_TOOL_ROUNDS else "Reviewing what I found"}
             msg = await _complete(messages, TOOLS if rnd < MAX_TOOL_ROUNDS else None, state)
             if not msg.tool_calls:
                 break
@@ -210,7 +213,7 @@ async def run(message, history=()):
                     result = IMPL[name](**args)
                 except Exception as e:  # noqa: BLE001 -- bad tool arguments go back to the model to fix
                     args, result = {}, {"error": f"{type(e).__name__}: {str(e)[:200]}"}
-                yield emit({"type": "status", "text": _summary(name, args)})
+                yield emit({"type": "status", "tool": name, "text": _summary(name, args)})
                 if name == "photos" and result.get("photos"):
                     galleries.append(result)
                 messages.append({"role": "tool", "tool_call_id": tc.id, "name": name,

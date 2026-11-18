@@ -9,152 +9,268 @@
 <style>
 :root {
   --bg: #f6f4ef; --panel: #ffffff; --ink: #1d1b17; --muted: #6d675c; --line: #e4dfd4;
-  --accent: #8a6a3b; --accent-ink: #ffffff; --user: #1d1b17; --user-ink: #f6f4ef; --chip: #efe9dd;
-  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.05);
+  --accent: #8a6a3b; --accent-soft: #f3ece0; --accent-ink: #ffffff; --user: #1d1b17; --user-ink: #f6f4ef; --chip: #efe9dd;
+  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 6px 20px rgba(0,0,0,.06);
 }
 @media (prefers-color-scheme: dark) {
   :root { --bg: #141311; --panel: #1d1c19; --ink: #ece7dc; --muted: #9c958a; --line: #2f2d28;
-          --accent: #c9a46a; --accent-ink: #141311; --user: #ece7dc; --user-ink: #141311; --chip: #26241f;
+          --accent: #c9a46a; --accent-soft: #2a251d; --accent-ink: #141311; --user: #ece7dc; --user-ink: #141311; --chip: #26241f;
           --shadow: none; }
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
 body { background: var(--bg); color: var(--ink); font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif; display: flex; flex-direction: column; }
-header { padding: 14px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
-header .wrap { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-h1 { font-size: 17px; margin: 0; letter-spacing: .2px; }
-.sub { color: var(--muted); font-size: 13px; }
+button { font: inherit; color: inherit; }
 .wrap { max-width: 920px; margin: 0 auto; width: 100%; }
-main { flex: 1; overflow-y: auto; padding: 20px 16px 8px; }
-.msg { margin: 0 0 18px; }
+
+header { padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.logo { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; flex: none; }
+h1 { font-size: 16px; margin: 0; letter-spacing: .2px; }
+.sub { color: var(--muted); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 99px; padding: 6px 13px; font-size: 13px; cursor: pointer; flex: none; }
+.ghost:hover { border-color: var(--accent); }
+
+main { flex: 1; overflow-y: auto; padding: 22px 16px 8px; }
+.intro { padding: 12px 0 8px; }
+.intro h2 { font-size: clamp(22px, 4vw, 28px); line-height: 1.25; margin: 0 0 8px; font-weight: 650; letter-spacing: -.2px; }
+.intro > p { color: var(--muted); margin: 0 0 18px; max-width: 640px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 22px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.stat b { display: block; font-size: 20px; font-weight: 650; }
+.stat span { color: var(--muted); font-size: 12.5px; }
+.label-sm { font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin: 0 0 8px; }
+.suggest { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.suggest button { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 11px 14px; text-align: start; cursor: pointer; display: flex; flex-direction: column; gap: 4px; transition: border-color .15s, transform .15s; }
+.suggest button:hover { border-color: var(--accent); transform: translateY(-1px); }
+.suggest .k { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .5px; }
+.suggest .q { font-size: 14px; }
+
+.msg { margin: 0 0 20px; }
 .user { display: flex; justify-content: flex-end; }
 .user .bubble { background: var(--user); color: var(--user-ink); border-radius: 16px 16px 4px 16px; padding: 9px 14px; max-width: 80%; white-space: pre-wrap; }
-.bot .bubble { background: var(--panel); border: 1px solid var(--line); border-radius: 4px 16px 16px 16px; padding: 12px 16px; box-shadow: var(--shadow); }
-.bot .bubble p { margin: .4em 0; }
-.bot .bubble ul, .bot .bubble ol { padding-inline-start: 1.3em; margin: .4em 0; }
-.bot .bubble a { color: var(--accent); }
-.bot .bubble table { border-collapse: collapse; margin: .5em 0; font-size: 14px; display: block; overflow-x: auto; }
-.bot .bubble th, .bot .bubble td { border: 1px solid var(--line); padding: 4px 8px; text-align: start; }
+.bot { display: flex; gap: 10px; align-items: flex-start; }
+.bot .logo { width: 28px; height: 28px; border-radius: 8px; margin-top: 2px; }
+.bot .bubble { flex: 1; min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 4px 16px 16px 16px; padding: 12px 16px; box-shadow: var(--shadow); }
+.content p { margin: .45em 0; }
+.content ul, .content ol { padding-inline-start: 1.3em; margin: .4em 0; }
+.content a { color: var(--accent); text-underline-offset: 2px; }
+.content h1, .content h2, .content h3 { font-size: 16px; margin: .8em 0 .3em; }
+.tablewrap { overflow-x: auto; margin: .6em 0; border: 1px solid var(--line); border-radius: 10px; }
+.content table { border-collapse: collapse; font-size: 13.5px; width: 100%; }
+.content th, .content td { padding: 7px 10px; text-align: start; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.content td:first-child { white-space: normal; min-width: 160px; }
+.content th { background: var(--accent-soft); font-weight: 600; font-size: 12.5px; }
+.content tr:last-child td { border-bottom: 0; }
+
 .steps { font-size: 12.5px; color: var(--muted); margin: 0 0 8px; }
-.steps summary { cursor: pointer; }
-.steps code { display: block; font-size: 12px; padding: 2px 0; word-break: break-word; }
-.thinking { color: var(--muted); font-size: 14px; }
-.thinking::after { content: "..."; animation: dots 1.2s steps(4) infinite; display: inline-block; width: 1.2em; overflow: hidden; vertical-align: bottom; }
-@keyframes dots { from { width: 0 } to { width: 1.2em } }
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; margin-top: 12px; }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; box-shadow: var(--shadow); transition: transform .15s; }
+.steps summary { cursor: pointer; width: fit-content; }
+.steps ol { margin: 6px 0 2px; padding-inline-start: 1.4em; }
+.steps li { padding: 1px 0; }
+.thinking { color: var(--muted); font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+.thinking::before { content: ""; width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-top: 14px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow); transition: transform .15s; }
 .card:hover { transform: translateY(-2px); }
-.card .img { aspect-ratio: 4 / 3; background: var(--chip) center / cover no-repeat; }
-.card .body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 3px; }
-.card .price { font-weight: 650; font-size: 16px; }
+.card .img { position: relative; display: block; aspect-ratio: 4 / 3; background: var(--chip) center / cover no-repeat; border: 0; padding: 0; width: 100%; cursor: pointer; }
+.card .over { position: absolute; inset: 8px 8px auto 8px; display: flex; gap: 4px; flex-wrap: wrap; }
+.card .over span, .card .count { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: rgba(20,19,17,.72); color: #fff; }
+.card .count { position: absolute; inset-inline-end: 8px; bottom: 8px; }
+.card .strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; padding: 3px 3px 0; }
+.card .strip button { aspect-ratio: 4 / 3; border: 0; padding: 0; background: var(--chip) center / cover no-repeat; border-radius: 4px; cursor: zoom-in; }
+.card .body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 3px; text-decoration: none; color: inherit; flex: 1; }
+.card .price { font-weight: 700; font-size: 17px; }
+.card .price small { font-weight: 400; color: var(--muted); font-size: 12.5px; }
 .card .title { font-size: 13.5px; }
 .card .meta { color: var(--muted); font-size: 12.5px; }
-.tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 99px; background: var(--chip); color: var(--muted); margin-inline-end: 4px; }
-.gallery { margin-top: 12px; }
+.card .go { margin-top: auto; padding-top: 6px; font-size: 12.5px; color: var(--accent); }
+
+.gallery { margin-top: 14px; }
 .gallery .label { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
 .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
-.thumbs figure { margin: 0; position: relative; cursor: zoom-in; border-radius: 8px; overflow: hidden; aspect-ratio: 4 / 3; background: var(--chip); }
+.thumbs button { position: relative; border: 0; padding: 0; cursor: zoom-in; border-radius: 8px; overflow: hidden; aspect-ratio: 4 / 3; background: var(--chip); }
 .thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.thumbs figcaption { position: absolute; inset-inline-start: 6px; bottom: 6px; font-size: 11px; background: rgba(0,0,0,.6); color: #fff; padding: 1px 7px; border-radius: 99px; }
+.thumbs span { position: absolute; inset-inline-start: 6px; bottom: 6px; font-size: 11px; background: rgba(0,0,0,.6); color: #fff; padding: 1px 7px; border-radius: 99px; }
 .error { color: #b3261e; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 18px; }
-.chips button { background: var(--panel); border: 1px solid var(--line); color: var(--ink); border-radius: 99px; padding: 7px 13px; font: inherit; font-size: 13.5px; cursor: pointer; text-align: start; }
-.chips button:hover { border-color: var(--accent); }
-.intro h2 { font-size: 22px; margin: 10px 0 4px; font-weight: 600; }
-.intro p { color: var(--muted); margin: 0 0 12px; }
-footer { padding: 10px 16px 16px; border-top: 1px solid var(--line); background: var(--panel); }
-form { display: flex; gap: 8px; }
-textarea { flex: 1; resize: none; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 12px; padding: 10px 12px; font: inherit; min-height: 46px; max-height: 160px; }
-textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-button.send { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 12px; padding: 0 18px; font: inherit; font-weight: 600; cursor: pointer; }
-button.send:disabled { opacity: .5; cursor: default; }
-.note { color: var(--muted); font-size: 11.5px; margin-top: 6px; }
-dialog { border: 0; padding: 0; background: transparent; max-width: 94vw; }
-dialog::backdrop { background: rgba(0,0,0,.8); }
-dialog img { max-width: 94vw; max-height: 86vh; display: block; border-radius: 8px; }
-dialog p { color: #fff; text-align: center; margin: 8px 0 0; }
+@media (prefers-color-scheme: dark) { .error { color: #f2b8b5; } }
+
+footer { padding: 10px 16px 14px; background: var(--bg); }
+form { display: flex; gap: 8px; align-items: flex-end; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 6px 6px 6px 14px; box-shadow: var(--shadow); }
+form:focus-within { border-color: var(--accent); }
+textarea { flex: 1; resize: none; border: 0; background: transparent; color: var(--ink); padding: 8px 0; font: inherit; min-height: 38px; max-height: 160px; outline: none; }
+button.send { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 11px; width: 40px; height: 40px; display: grid; place-items: center; cursor: pointer; flex: none; }
+button.send:disabled { opacity: .45; cursor: default; }
+.note { color: var(--muted); font-size: 11.5px; margin-top: 7px; text-align: center; }
+
+dialog { border: 0; padding: 0; background: transparent; max-width: 100vw; max-height: 100vh; overflow: visible; }
+dialog::backdrop { background: rgba(0,0,0,.88); }
+dialog figure { margin: 0; }
+dialog img { max-width: 92vw; max-height: 82vh; display: block; border-radius: 8px; margin: 0 auto; }
+dialog figcaption { color: #ddd; text-align: center; margin: 10px 0 0; font-size: 14px; }
+.lb-btn { position: fixed; background: rgba(255,255,255,.12); color: #fff; border: 0; border-radius: 99px; width: 44px; height: 44px; font-size: 24px; line-height: 1; cursor: pointer; display: grid; place-items: center; }
+.lb-btn:hover { background: rgba(255,255,255,.24); }
+.lb-close { top: 16px; right: 16px; }
+.lb-prev { left: 16px; top: 50%; translate: 0 -50%; }
+.lb-next { right: 16px; top: 50%; translate: 0 -50%; }
+@media (max-width: 600px) { .lb-prev, .lb-next { top: auto; bottom: 20px; translate: none; } .bot .logo { display: none; } }
 </style>
 </head>
 <body>
-<header><div class="wrap"><h1>Property Assistant</h1><span class="sub" id="kbinfo">DarGlobal projects and Wasalt listings</span></div></header>
+<header><div class="wrap bar">
+  <div class="brand">
+    <div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg></div>
+    <div style="min-width:0"><h1>Property Assistant</h1><div class="sub" id="kbinfo">DarGlobal projects and Wasalt listings</div></div>
+  </div>
+  <button class="ghost" id="newchat" hidden>New chat</button>
+</div></header>
 <main id="log"><div class="wrap" id="thread">
   <div class="intro" id="intro">
-    <h2>Tell me what you are looking for.</h2>
-    <p>Budget, city, sale or rent, bedrooms: I will search the listings and DarGlobal projects, show prices and photos, and link every result to its source.</p>
-    <div class="chips" id="chips"></div>
+    <h2>Find a property, compare prices, see the photos.</h2>
+    <p>Tell me your budget, city, sale or rent and bedrooms. I search Wasalt listings in Saudi Arabia and DarGlobal projects worldwide, show prices and photos, and link every result to its source. English or Arabic.</p>
+    <div class="stats" id="stats"></div>
+    <div class="label-sm">Try one of these</div>
+    <div class="suggest" id="chips"></div>
   </div>
 </div></main>
 <footer><div class="wrap">
-  <form id="form"><textarea id="input" rows="1" dir="auto" placeholder="e.g. 3-bedroom apartment for rent in Riyadh under 60,000 SAR a year" required></textarea><button class="send" id="send">Send</button></form>
-  <div class="note">Answers come from data scraped from darglobal.co.uk and wasalt.sa on the date shown above, a sample of listings. Information only, not financial advice.</div>
+  <form id="form"><textarea id="input" rows="1" dir="auto" placeholder="e.g. 3-bedroom apartment for rent in Riyadh under 60,000 SAR a year" required></textarea>
+    <button class="send" id="send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button></form>
+  <div class="note">Data scraped from darglobal.co.uk and wasalt.sa on the date above; Wasalt is a sample of listings. Information only, not financial advice.</div>
 </div></footer>
-<dialog id="lightbox"><img id="lbimg" alt=""><p id="lbcap"></p></dialog>
+<dialog id="lightbox">
+  <button class="lb-btn lb-close" data-lb="close" aria-label="Close">&times;</button>
+  <button class="lb-btn lb-prev" data-lb="-1" aria-label="Previous photo">&#8249;</button>
+  <figure><img id="lbimg" alt=""><figcaption id="lbcap"></figcaption></figure>
+  <button class="lb-btn lb-next" data-lb="1" aria-label="Next photo">&#8250;</button>
+</dialog>
 <script>
 const EXAMPLES = [
-  "3-bedroom apartment for rent in Riyadh under 60,000 SAR a year",
-  "Villa for sale in Jeddah under 2 million SAR, show me photos",
-  "Which DarGlobal projects are in Dubai, and what unit types do they have?",
-  "Average apartment sale price per sqm in Riyadh vs Jeddah",
-  "Show me the pool and living areas at W Residences",
-  "أبحث عن فيلا للبيع في الرياض بأقل من مليوني ريال",
+  ["Rent", "3-bedroom apartment for rent in Riyadh under 60,000 SAR a year"],
+  ["Buy", "Villa for sale in Jeddah under 2 million SAR, show me photos"],
+  ["DarGlobal", "Which DarGlobal projects are in Dubai, and what unit types do they have?"],
+  ["Market", "Average apartment sale price per sqm in Riyadh vs Jeddah"],
+  ["Photos", "Show me the pool and living areas at W Residences"],
+  ["عربي", "أبحث عن فيلا للبيع في الرياض بأقل من مليوني ريال"],
 ];
+const TOOLS = {search_listings: "Searched listings", listing_stats: "Calculated price statistics", get_listing: "Opened a listing",
+  list_projects: "Listed DarGlobal projects", get_project: "Opened a DarGlobal project", search_docs: "Searched page text",
+  get_page: "Read a page", photos: "Collected photos"};
+const DOING = {search_listings: "Searching listings", listing_stats: "Calculating prices", get_listing: "Opening the listing",
+  list_projects: "Looking up DarGlobal projects", get_project: "Opening the project", search_docs: "Searching DarGlobal pages",
+  get_page: "Reading the page", photos: "Collecting photos"};
+const HIDE_ARGS = new Set(["limit", "owner", "sort", "id", "url"]);
 const $ = (s) => document.querySelector(s);
 const thread = $("#thread"), log = $("#log"), input = $("#input"), send = $("#send");
-const history = [];
+const history = [], galleries = [];
 const fmt = (n) => n == null ? "" : Number(n).toLocaleString("en-US", {maximumFractionDigits: 0});
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
 const PERIOD = {yearly: "/ year", monthly: "/ month", daily: "/ day", total: ""};
 
 fetch("/api/health").then(r => r.json()).then(h => {
   const k = h.kb || {};
-  $("#kbinfo").textContent = `${fmt(k.wasalt_listings)} Wasalt listings, ${k.darglobal_projects} DarGlobal projects, ${fmt(k.images)} photos, data from ${k.built_at}`;
+  $("#kbinfo").textContent = `${fmt(k.wasalt_listings)} listings, ${k.darglobal_projects} projects, ${fmt(k.images)} photos, data from ${k.built_at}`;
+  $("#stats").innerHTML = [[fmt(k.wasalt_listings), "Wasalt listings (sale and rent)"], [k.darglobal_projects, "DarGlobal projects"],
+    [fmt(k.images), "photos, labelled by room"], [k.built_at, "data snapshot"]]
+    .map(([v, l]) => `<div class="stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join("");
 }).catch(() => {});
 
-for (const q of EXAMPLES) {
-  const b = document.createElement("button"); b.type = "button"; b.textContent = q; b.dir = "auto";
+for (const [k, q] of EXAMPLES) {
+  const b = document.createElement("button"); b.type = "button"; b.dir = "auto";
+  b.innerHTML = `<span class="k">${esc(k)}</span><span class="q">${esc(q)}</span>`;
   b.onclick = () => ask(q); $("#chips").appendChild(b);
 }
+$("#newchat").onclick = () => location.reload();
 
 function add(cls, html) {
   const d = document.createElement("div"); d.className = "msg " + cls; d.innerHTML = html;
   thread.appendChild(d); log.scrollTop = log.scrollHeight; return d;
 }
 
-function card(c) {
+function stepText(s) {  // "search_listings(city=Jeddah, max_price=2000000)" -> "Searched listings: Jeddah, max price 2,000,000"
+  const m = s.match(/^(\w+)\((.*)\)$/s); if (!m) return s;
+  const args = m[2].split(/, (?=\w+=)/).filter(Boolean).map(a => a.split(/=(.*)/s)).filter(([k]) => !HIDE_ARGS.has(k))
+    .map(([k, v]) => /^(min|max)_/.test(k) ? `${k.replace("_", " ")} ${/^\d+(\.\d+)?$/.test(v) ? fmt(v) : v}` : v);
+  return (TOOLS[m[1]] || m[1]) + (args.length ? ": " + args.join(", ") : "");
+}
+
+const gid = (g) => galleries.push(g) - 1;
+const bg = (u) => u ? `style="background-image:url('${esc(u)}')"` : "";
+
+function card(c, g) {
+  const id = g ? gid(g) : null, photos = g ? g.photos : [];
+  const cover = c.cover || photos[0]?.thumb || "";
+  const tags = c.kind === "listing"
+    ? [c.property_for === "rent" ? "For rent" : "For sale", c.sub_type].filter(Boolean)
+    : ["DarGlobal project", c.units_available ? `${c.units_available} units available` : ""].filter(Boolean);
+  const img = `<${g ? `button type="button" data-g="${id}" data-i="0" aria-label="Open photos"` : `a href="${esc(c.url)}" target="_blank" rel="noopener"`} class="img" ${bg(cover)}>
+    <div class="over">${tags.map(t => `<span>${esc(t)}</span>`).join("")}</div>${g ? `<span class="count">${photos.length} photos</span>` : ""}</${g ? "button" : "a"}>`;
+  const strip = photos.length > 1 ? `<div class="strip">${photos.slice(1, 5).map((p, i) => `<button type="button" data-g="${id}" data-i="${i + 1}" ${bg(p.thumb || p.url)} aria-label="${esc(p.label || "Photo")}"></button>`).join("")}</div>` : "";
+  let body;
   if (c.kind === "listing") {
     const meta = [c.bedrooms ? `${c.bedrooms} bed` : "", c.area_sqm ? `${fmt(c.area_sqm)} sqm` : "", [c.district, c.city].filter(Boolean).join(", ")].filter(Boolean).join(" · ");
-    return `<a class="card" href="${esc(c.url)}" target="_blank" rel="noopener">
-      <div class="img" style="background-image:url('${esc(c.cover || "")}')"></div>
-      <div class="body"><div class="price">${c.price ? `${esc(c.currency || "")} ${fmt(c.price)} <span class="meta">${PERIOD[c.price_period] || ""}</span>` : "Price on request"}</div>
-      <div class="title" dir="auto">${esc(c.title)}</div><div class="meta">${esc(meta)}</div>
-      <div><span class="tag">${esc(c.property_for === "rent" ? "For rent" : "For sale")}</span><span class="tag">${esc(c.sub_type || "")}</span><span class="tag">${c.source === "darglobal" ? "DarGlobal" : "Wasalt"}</span></div></div></a>`;
+    body = `<div class="price">${c.price ? `${esc(c.currency || "")} ${fmt(c.price)} <small>${PERIOD[c.price_period] || ""}</small>` : "Price on request"}</div>
+      <div class="title" dir="auto">${esc(c.title)}</div><div class="meta">${esc(meta)}</div><div class="go">View on Wasalt &rarr;</div>`;
+  } else {
+    let det = {}; try { det = JSON.parse(c.details || "{}") || {}; } catch (e) {}
+    const facts = Object.entries(det).slice(0, 2).map(([k, v]) => `${k}: ${v}`).join(" · ");
+    body = `<div class="price">${esc(c.title)}</div><div class="meta">${esc([c.area, c.city, c.country].filter(Boolean).join(", "))}</div>
+      ${facts ? `<div class="meta">${esc(facts)}</div>` : ""}<div class="go">View on DarGlobal &rarr;</div>`;
   }
-  let det = {}; try { det = JSON.parse(c.details || "{}") || {}; } catch (e) {}
-  const facts = Object.entries(det).slice(0, 2).map(([k, v]) => `${k}: ${v}`).join(" · ") + (c.units_available ? ` · ${c.units_available} units available` : "");
-  return `<a class="card" href="${esc(c.url)}" target="_blank" rel="noopener">
-    <div class="img" style="background-image:url('${esc(c.cover || "")}')"></div>
-    <div class="body"><div class="price">${esc(c.title)}</div><div class="meta">${esc([c.area, c.city, c.country].filter(Boolean).join(", "))}</div>
-    <div class="meta">${esc(facts)}</div><div><span class="tag">DarGlobal project</span></div></div></a>`;
+  return `<article class="card">${img}${strip}<a class="body" href="${esc(c.url)}" target="_blank" rel="noopener">${body}</a></article>`;
 }
 
 function gallery(g) {
-  const thumbs = g.photos.map(p => `<figure data-src="${esc(p.url)}" data-cap="${esc(p.label || "")}"><img loading="lazy" src="${esc(p.thumb || p.url)}" alt="${esc(p.label || "Photo")}">${p.label ? `<figcaption>${esc(p.label)}</figcaption>` : ""}</figure>`).join("");
+  const id = gid(g);
+  const thumbs = g.photos.map((p, i) => `<button type="button" data-g="${id}" data-i="${i}"><img loading="lazy" src="${esc(p.thumb || p.url)}" alt="${esc(p.label || "Photo")}">${p.label ? `<span>${esc(p.label)}</span>` : ""}</button>`).join("");
   return `<div class="gallery"><div class="label" dir="auto">${esc(g.title ? "Photos: " + g.title : "Photos")}</div><div class="thumbs">${thumbs}</div></div>`;
 }
 
+const ownerOf = (c) => c.kind === "listing" ? c.id : "project-" + c.slug;
+function extrasHtml(gals, cards) {  // photos go inside their card; photos of anything without a card get their own gallery
+  const byOwner = Object.fromEntries(gals.map(g => [g.owner, g]));
+  const used = new Set();
+  const cardsHtml = cards.length ? `<div class="cards">${cards.map(c => { const g = byOwner[ownerOf(c)]; if (g) used.add(g.owner); return card(c, g); }).join("")}</div>` : "";
+  return gals.filter(g => !used.has(g.owner)).map(gallery).join("") + cardsHtml;
+}
+
+const lb = {photos: [], i: 0}, box = $("#lightbox");
+function show(i) {
+  lb.i = (i + lb.photos.length) % lb.photos.length; const p = lb.photos[lb.i];
+  $("#lbimg").src = p.url; $("#lbimg").alt = p.label || "Photo";
+  $("#lbcap").textContent = [p.label, `${lb.i + 1} / ${lb.photos.length}`].filter(Boolean).join("  ·  ");
+  box.querySelectorAll(".lb-prev, .lb-next").forEach(b => b.hidden = lb.photos.length < 2);
+}
 thread.addEventListener("click", (e) => {
-  const f = e.target.closest("figure[data-src]"); if (!f) return;
-  $("#lbimg").src = f.dataset.src; $("#lbcap").textContent = f.dataset.cap; $("#lightbox").showModal();
+  const t = e.target.closest("[data-g]"); if (!t) return;
+  lb.photos = galleries[+t.dataset.g].photos; show(+t.dataset.i); box.showModal();
 });
-$("#lightbox").addEventListener("click", () => $("#lightbox").close());
+box.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-lb]");
+  if (b) b.dataset.lb === "close" ? box.close() : show(lb.i + +b.dataset.lb);
+  else if (e.target === box) box.close();
+});
+box.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") show(lb.i + 1); if (e.key === "ArrowLeft") show(lb.i - 1); });
+let touchX = null;
+box.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; });
+box.addEventListener("touchend", (e) => { const dx = e.changedTouches[0].clientX - touchX; if (Math.abs(dx) > 40) show(lb.i + (dx < 0 ? 1 : -1)); });
 
 async function ask(text) {
   text = text.trim(); if (!text || send.disabled) return;
-  $("#intro")?.remove();
+  $("#intro")?.remove(); $("#newchat").hidden = false;
   add("user", `<div class="bubble" dir="auto">${esc(text)}</div>`);
-  const bot = add("bot", `<div class="bubble"><details class="steps" hidden><summary>How I searched</summary><div class="list"></div></details><div class="content"><span class="thinking">Searching</span></div><div class="extras"></div></div>`);
+  const bot = add("bot", `<div class="logo"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></div>
+    <div class="bubble"><details class="steps" hidden><summary>How I searched</summary><ol></ol></details><div class="content"><span class="thinking">Thinking</span></div><div class="extras"></div></div>`);
   const steps = bot.querySelector(".steps"), content = bot.querySelector(".content"), extras = bot.querySelector(".extras");
-  send.disabled = true; input.value = ""; let answer = "";
+  send.disabled = true; input.value = ""; input.style.height = "auto";
+  let answer = ""; const gals = []; let cards = [], holdUntil = 0, timer = null;
+  const setLive = (t, hold = 0) => {  // live label; a tool label stays up briefly so a fast lookup is still readable
+    clearTimeout(timer);
+    const apply = () => { const th = content.querySelector(".thinking"); if (th) th.textContent = t; holdUntil = Date.now() + hold; };
+    const wait = holdUntil - Date.now(); wait > 0 ? (timer = setTimeout(apply, wait)) : apply();
+  };
   try {
     const r = await fetch("/api/chat", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({message: text.slice(0, 2000), history: history.slice(-12)})});
     if (!r.ok) throw new Error(r.status);
@@ -167,22 +283,29 @@ async function ask(text) {
         const line = buf.slice(0, i).trim(); buf = buf.slice(i + 2);
         if (!line.startsWith("data:")) continue;
         const ev = JSON.parse(line.slice(5));
-        if (ev.type === "status") { steps.hidden = false; steps.querySelector(".list").insertAdjacentHTML("beforeend", `<code>${esc(ev.text)}</code>`); }
-        else if (ev.type === "answer") { answer = ev.text; content.innerHTML = DOMPurify.sanitize(marked.parse(answer)); content.dir = "auto"; content.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener"; }); }
-        else if (ev.type === "gallery") extras.insertAdjacentHTML("beforeend", gallery(ev));
-        else if (ev.type === "cards") extras.insertAdjacentHTML("beforeend", `<div class="cards">${ev.items.map(card).join("")}</div>`);
+        if (ev.type === "phase") setLive(ev.text);
+        else if (ev.type === "status") {
+          steps.hidden = false; steps.querySelector("ol").insertAdjacentHTML("beforeend", `<li>${esc(stepText(ev.text))}</li>`);
+          setLive(DOING[ev.tool] || "Searching", 900);
+        } else if (ev.type === "answer") {
+          answer = ev.text; content.innerHTML = DOMPurify.sanitize(marked.parse(answer)); content.dir = "auto";
+          content.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
+          content.querySelectorAll("table").forEach(t => { const w = document.createElement("div"); w.className = "tablewrap"; t.replaceWith(w); w.appendChild(t); });
+        } else if (ev.type === "gallery") gals.push(ev);
+        else if (ev.type === "cards") cards = ev.items;
         else if (ev.type === "error") content.innerHTML = `<span class="error">${esc(ev.text)}</span>`;
         log.scrollTop = log.scrollHeight;
       }
     }
   } catch (e) { content.innerHTML = `<span class="error">Connection problem. Please try again.</span>`; }
+  clearTimeout(timer); extras.innerHTML = extrasHtml(gals, cards);
   if (!answer && content.querySelector(".thinking")) content.innerHTML = `<span class="error">No answer came back. Please try again.</span>`;
   if (answer) history.push({role: "user", content: text}, {role: "assistant", content: answer});
   send.disabled = false; input.focus();
 }
 
 $("#form").addEventListener("submit", (e) => { e.preventDefault(); ask(input.value); });
-input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask(input.value); } });
+input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); ask(input.value); } });
 input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 160) + "px"; });
 </script>
 </body>
