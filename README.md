@@ -4,7 +4,7 @@ A chatbot that answers property questions from data scraped from darglobal.co.uk
 requirements (budget, city, sale or rent, bedrooms) and it finds matching properties, explains prices, and shows
 them as cards with photos, each linked to its source page. Works in English and Arabic.
 
-- **Live:** `<Render URL>` (free instance: the first visit after 15 idle minutes takes about a minute to wake)
+- **Live:** https://property-assistant-8mt5.onrender.com (free instance: the first visit after 15 idle minutes takes about a minute to wake)
 - **Model:** free models on OpenRouter, tried in order on rate limits (`OPENROUTER_MODELS`)
 - **Stack:** Python, FastAPI, SQLite (FTS5), one Docker container on Render
 
