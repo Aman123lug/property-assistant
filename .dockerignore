@@ -1,0 +1,7 @@
+.venv
+.env
+data/raw
+scrape
+eval
+**/__pycache__
+.git
